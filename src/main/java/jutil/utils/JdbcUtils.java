@@ -52,7 +52,7 @@ public class JdbcUtils extends AbstractUtils
     /**
      * Construtor Padrao
      */
-    public ConnectionUtils()
+    public JdbcUtils()
     {
     }
 
