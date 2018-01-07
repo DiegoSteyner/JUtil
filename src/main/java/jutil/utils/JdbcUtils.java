@@ -17,7 +17,7 @@ import jutil.abstracts.AbstractUtils;
  * 
  * @author Diego Steyner
  */
-public class ConnectionUtils extends AbstractUtils
+public class JdbcUtils extends AbstractUtils
 {
     private Connection connection;
     private Statement  statement;
