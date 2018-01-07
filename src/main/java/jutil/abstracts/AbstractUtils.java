@@ -19,6 +19,13 @@ public abstract class AbstractUtils
      */
     protected static PrintStream                         out                  = System.out;
     
+    /**
+     * Método utilitário padronizado de impressão
+     */
+    public static synchronized void printLn()
+    {
+        out.println();
+    }
     
     /**
      * Método utilitário padronizado de impressão
