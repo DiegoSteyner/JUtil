@@ -1,5 +1,5 @@
 # JUtil
-Projeto de classes utilitárias pessoais usadas em projetos onde não é possível utilizar APIs externas mais robustas ou de versões do Java
+Projeto de classes utilitárias pessoais usadas em projetos onde não é possível utilizar APIs externas mais robustas ou que possua limitações de versões do Java
 
 # Info 01
 
