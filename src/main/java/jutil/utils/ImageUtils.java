@@ -43,6 +43,8 @@ import jutil.abstracts.AbstractUtils;
 
 /**
  * Classe utilitária para trabalhar com imagens
+ * 
+ * @author Diego Steyner
  */
 @SuppressWarnings("restriction")
 public class ImageUtils extends AbstractUtils
