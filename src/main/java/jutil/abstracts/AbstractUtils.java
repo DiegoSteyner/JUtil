@@ -85,4 +85,41 @@ public abstract class AbstractUtils
     {
         out.println(str);
     }
+    
+    /**
+     * Método que imprime uma matrix de double
+     * 
+     * @param matrix A matrix que se deseja imprimir
+     * @throws Exception Caso algum erro ocorra uma excessao será lançada
+     */
+    public static synchronized void printArray(double matrix[][]) throws Exception
+    {
+        for (int row = 0; row < matrix.length; row++)
+        {
+            for (int column = 0; column < matrix[row].length; column++)
+            {
+                out.print(matrix[row][column] + " ");
+            }
+
+            out.println();
+        }
+    }
+
+    /**
+     * Método que imprime uma matrix de inteiro
+     * 
+     * @param matrix A matrix que se deseja imprimir
+     * @throws Exception Caso algum erro ocorra uma excessao será lançada
+     */
+    public static synchronized void printArray(int matrix[][]) throws Exception
+    {
+        for (int row = 0; row < matrix.length; row++)
+        {
+            for (int column = 0; column < matrix[row].length; column++)
+            {
+                out.print(matrix[row][column] + " ");
+            }
+            out.println();
+        }
+    }
 }
