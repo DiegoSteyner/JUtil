@@ -10,12 +10,23 @@ import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.URI;
 import java.net.URL;
+import java.security.KeyStore;
+import java.security.cert.X509Certificate;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLHandshakeException;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
+
 import jutil.abstracts.AbstractUtils;
+import jutil.implementation.TrustManagerX509Imp;
 
 /**
  * Classe que contem Método para se trabalhar com a rede local da máquina ou com links de internet
@@ -24,6 +35,8 @@ import jutil.abstracts.AbstractUtils;
  */
 public class NetworkUtils extends AbstractUtils
 {
+
+    public static final String CONNECTION_TYPE_TLS = "TLS";
 
     /**
      * Regex para validação de endereços IP
@@ -374,7 +387,7 @@ public class NetworkUtils extends AbstractUtils
      * @param url A URL que se pretende lê
      * 
      * @return As linhas do TXT ou JSON da forma que foi retornado
-     * @throws Exception Caso ocorra algum erro uma exceção será lançada
+     * c
      */
     public static String getTextContentFromURL(String url) throws Exception
     {
@@ -386,5 +399,56 @@ public class NetworkUtils extends AbstractUtils
         scanner.close();
 
         return (content);
+    }
+    
+    /**
+     * Método que inicia uma conexão segura com algum servidor WEB ou HTTP
+     * 
+     * @param host O host onde o servidor será alcançado
+     * @param port A porta onde o serivodor será alcançado
+     * @param connectionType O tipo de conexão, caso seja passado nulo ou vazio, será utilizado {@link #CONNECTION_TYPE_TLS}
+     * @param timeout O timeout em milessegundos de espera pela conexão
+     * @param ks o {@link KeyStore} locall ou remoto onde os certificados podem ser validados
+     * 
+     * @return Um vetor de {@link X509Certificate} contendo toda a cadeia certificadora da conexão
+     * @throws Exception Caso ocorra algum erro uma exceção será lançada 
+     */
+    public static X509Certificate[] testSecureConnection(String host, int port, String connectionType, int timeout, KeyStore ks) throws Exception
+    {
+        SSLContext context = SSLContext.getInstance(StringUtils.ifNullOrEmptyGet(Boolean.TRUE, connectionType, CONNECTION_TYPE_TLS));
+        TrustManagerFactory tfactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+
+        tfactory.init(ks);
+
+        TrustManagerX509Imp tm = new TrustManagerX509Imp(((X509TrustManager) tfactory.getTrustManagers()[0]));
+
+        context.init(null, new TrustManager[] { tm }, null);
+
+        SSLSocketFactory factory = context.getSocketFactory();
+
+        //Abrindo a conexáo com o host de destino na porta especificada
+        SSLSocket socket = (SSLSocket) factory.createSocket(host, port);
+        socket.setSoTimeout(timeout);
+
+        try
+        {
+
+            socket.startHandshake();
+            socket.close();
+        }
+        catch (SSLHandshakeException e)
+        {
+            // Esse código assume que o cacert não está todo gerado nesse momento, caso ele esteja gerado,
+            // trate os erros de Handshake aqui
+        }
+
+        X509Certificate[] chain = tm.getChain();
+
+        if (chain == null)
+        {
+            throw new Exception("Não foi possível obter toda a cadeia certificadora do servidor.");
+        }
+
+        return(chain);
     }
 }
