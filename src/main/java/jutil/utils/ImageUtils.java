@@ -40,6 +40,7 @@ import com.sun.image.codec.jpeg.JPEGEncodeParam;
 import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 import jutil.abstracts.AbstractUtils;
+import jutil.implementation.TransferableImp;
 
 /**
  * Classe utilitária para trabalhar com imagens
@@ -629,7 +630,7 @@ public class ImageUtils extends AbstractUtils
     	newImage.createGraphics().drawImage(image, 0, 0, null);
     	image = newImage;
     	
-    	ImageSelection imageSelection = new ImageSelection(image);
+    	TransferableImp imageSelection = new TransferableImp(image);
     	Toolkit toolkit = Toolkit.getDefaultToolkit();
     	toolkit.getSystemClipboard().setContents(imageSelection, null);
     }
