@@ -134,6 +134,24 @@ public class RuntimeUtils extends AbstractUtils
     }
     
     /**
+     * Método que cria uma linha de comando capaz de executar um comando CMD em processo totalmente novo.</br></br>
+     * Obs: Caso um novo programa seja chamado de dentro do CMD, os dois programas pertecerão a mesma execução, e, a depender do funcionamento do subprograma</br></br>
+     * vinculado ao programa principal, um pode influenciar no funcionamento do outro, mas nenhum dos dois influenciará no funcionamento da rotina atual.
+     * 
+     * @param cmdCommand O comando CMD
+     * 
+     * @return A comando montado
+     * @throws Exception Caso algum erro ocorra uma excessão será lançada
+     */
+    public static String getCommandToExecWindowsCMDAsNewProcess(String cmdCommand) throws Exception
+    {
+        StringBuilder command = new StringBuilder();
+        command.append("rundll32 SHELL32.DLL,ShellExec_RunDLL cmd /c \" ").append(cmdCommand).append(" \"");
+        
+        return(command.toString());
+    }
+    
+    /**
      * Método que faz o execução da thread atual ficar em pausa por um determinado tempo
      * 
      * @param segundos Os Segundos em espera
