@@ -1076,4 +1076,43 @@ public class FileUtils extends AbstractUtils
         
         return digest.digest();
     }
+    
+    /**
+     * Método que testa se um arquivo está em Lock por algum outro programa através da abertura de escrita assincrona.
+     * 
+     * @param file O arquivo que se deseja testar
+     * 
+     * @return Se True, O arquivo está travado por algum outro programa
+     * @throws Exception Caso ocorra algum erro uma exceção será lançada
+     */
+    public static boolean isLocked(File file) throws Exception
+    {
+        RandomAccessFile rdn = new RandomAccessFile(file, "rw");
+        FileChannel channel = rdn.getChannel();
+        
+        try
+        {
+            if (channel != null)
+            {
+                rdn.close();
+                channel.close();
+                return (Boolean.FALSE);
+            }
+            else
+            {
+                rdn.close();
+                return (Boolean.TRUE);
+            }
+        }
+        catch (Exception ex)
+        {
+            if (channel != null)
+            {
+                channel.close();
+            }
+            
+            rdn.close();
+            return (Boolean.TRUE);
+        }
+    }
 }
