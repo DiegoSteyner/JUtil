@@ -413,7 +413,7 @@ public class NetworkUtils extends AbstractUtils
      * @return Um vetor de {@link X509Certificate} contendo toda a cadeia certificadora da conexão
      * @throws Exception Caso ocorra algum erro uma exceção será lançada 
      */
-    public static X509Certificate[] testSecureConnection(String host, int port, String connectionType, int timeout, KeyStore ks) throws Exception
+    public static X509Certificate[] getHandshakeConnectionCertificates(String host, int port, String connectionType, int timeout, KeyStore ks) throws Exception
     {
         SSLContext context = SSLContext.getInstance(StringUtils.ifNullOrEmptyGet(Boolean.TRUE, connectionType, CONNECTION_TYPE_TLS));
         TrustManagerFactory tfactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
