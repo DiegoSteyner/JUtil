@@ -17,6 +17,7 @@ import java.awt.RenderingHints;
 import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.Transparency;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
@@ -192,9 +193,22 @@ public class ImageUtils extends AbstractUtils
 
         return (Boolean.TRUE);
     }
-      
+    
     /**
-     * Método que recebe uma imagem redimensionada
+     * Método que calcula o tamanho baseado em um fator multiplicador.
+     *  
+     * @param widthOrHeight O Width ou o Height que se deseja obter à partir do fatos
+     * @param factor O fator desejado
+     * 
+     * @return O novo tamanho baseado no fator
+     */
+    public static int getScaleByFactor(int widthOrHeight, double factor)
+    {
+    	return((int) (factor * widthOrHeight));
+    }
+    
+    /**
+     * Método que recebe um {@link BufferedImage} e cria um novo com um novo tamanho redimensionado.
      *
      * @param image a imagem a ser redimensionada
      * @param width O novo tamanho da imagem
@@ -572,6 +586,25 @@ public class ImageUtils extends AbstractUtils
     	imagem.flush();
     	return (retorno);
     }
+    
+    /**
+     * Método que faz a copia do conteúdo de um {@link BufferedImage} para outro.
+     * 
+     * @param source O {@link BufferedImage} com a imagem
+     * @param target O {@link BufferedImage} para onde a imagem será copiada
+     * 
+     * @return O {@link BufferedImage} com a imagem copiada
+     * @exception Exception Caso ocorra algum erro uma excessão será lançada
+     */
+    public static BufferedImage clone(BufferedImage source, BufferedImage target) throws Exception 
+    {
+		Graphics2D g2 = target.createGraphics();
+		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+		g2.drawRenderedImage(source, AffineTransform.getScaleInstance(((double) target.getWidth() / source.getWidth()), ((double) target.getHeight() / source.getHeight())));
+		g2.dispose();
+		
+		return (target);
+	}
 
     /**
      * Método que converte um {@link Icon} para um {@link Image}
