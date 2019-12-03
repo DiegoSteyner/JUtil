@@ -1,4 +1,4 @@
-package jutil.utils.ldap;
+package jutil.utils;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -27,14 +27,14 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import jutil.abstracts.AbstractUtils;
-import jutil.utils.StringUtils;
+import jutil.data.dtos.UserDTO;
 
 /**
  * Classe utilitária para trabalhar com autenticação LDAP
  * 
  * @author Diego Steyner
  */
-public class LDAPUtils extends AbstractUtils 
+public final class LDAPUtils extends AbstractUtils 
 {
     /**
      * URL inicial do protocolo
@@ -172,7 +172,7 @@ public class LDAPUtils extends AbstractUtils
         env.put("java.naming.provider.url", providerURL);
         env.put("java.naming.security.authentication", "simple");
         
-        if(StringUtils.isNullOrEmpty(Boolean.TRUE, domain))
+        if(StringUtils.isNullOrEmptyTrim(domain))
         {
             env.put("java.naming.security.principal", userLogin);
         }
@@ -417,12 +417,12 @@ public class LDAPUtils extends AbstractUtils
 	 * @param context O objeto {@link LdapContext} contendo a conexão com o servidor
      * @param ldapSearchBase A base de busca
      * 
-	 * @return Um vetor com todos os usuários encontrados abstraídos para o objeto {@link User}
+	 * @return Um vetor com todos os usuários encontrados abstraídos para o objeto {@link UserDTO}
 	 * @throws Exception Caso algum erro ocorra uma excessão será lançada
 	 */
-	public static User[] getAllUsers(LdapContext context, String searchBase) throws Exception 
+	public static UserDTO[] getAllUsers(LdapContext context, String searchBase) throws Exception 
 	{
-		ArrayList<User> users = new ArrayList<User>();
+		ArrayList<UserDTO> users = new ArrayList<UserDTO>();
 
 		SearchControls controls = new SearchControls();
 		controls.setSearchScope(javax.naming.directory.SearchControls.SUBTREE_SCOPE);
@@ -435,11 +435,11 @@ public class LDAPUtils extends AbstractUtils
             Attribute user = attr.get(LDAP_ATTRIBUTE_USER_PRINCIPAL_NAME);
             if (user != null) 
             {
-                users.add(new User(attr));
+                users.add(new UserDTO(attr));
             }
         }
 		
-		return users.toArray(new User[users.size()]);
+		return users.toArray(new UserDTO[users.size()]);
 	}
 	
 	/**
@@ -449,10 +449,10 @@ public class LDAPUtils extends AbstractUtils
      * @param searchBase A base de busca
      * @param username A conta que se está procurando
      * 
-     * @return O usuário encontrado abstraído para o objeto {@link User}
+     * @return O usuário encontrado abstraído para o objeto {@link UserDTO}
      * @throws Exception Caso algum erro ocorra uma excessão será lançada
 	 */
-	public static User getUser(LdapContext context, String searchBase, String username) throws Exception 
+	public static UserDTO getUser(LdapContext context, String searchBase, String username) throws Exception 
 	{
         String principalName = username + "@" + searchBase.substring(searchBase.indexOf("DC"), searchBase.length()).replace("DC=", "").replace(",", ".");
         
@@ -467,7 +467,7 @@ public class LDAPUtils extends AbstractUtils
         	Attribute user = attr.get(LDAP_ATTRIBUTE_USER_PRINCIPAL_NAME);
         	if (user!=null) 
         	{
-        	    return new User(attr);
+        	    return new UserDTO(attr);
         	}
         }
         
@@ -478,7 +478,7 @@ public class LDAPUtils extends AbstractUtils
      * Método que altera o password do usuário se o controlador de domínio do LDAP estiver
      * habilitado.
      * 
-     * @param user O objeto {@link User} recuperado do servidor
+     * @param user O objeto {@link UserDTO} recuperado do servidor
      * @param oldPass O password antigo do usuário
      * @param newPass O novo password que se deseja atribuir ao usuário
      * 
@@ -491,7 +491,7 @@ public class LDAPUtils extends AbstractUtils
      * 
      * @exception Exception Caso algum erro ocorra, uma exceção será lançada.
      */
-    public void changePassword(User user, String oldPass, String newPass, boolean trustAllCerts, LdapContext context) throws Exception 
+    public void changePassword(UserDTO user, String oldPass, String newPass, boolean trustAllCerts, LdapContext context) throws Exception 
     {
         if(user.isBlockChangePassword())
         {

@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URL;
@@ -25,79 +26,16 @@ import java.util.regex.Pattern;
 import javax.swing.filechooser.FileSystemView;
 
 import jutil.abstracts.AbstractUtils;
+import jutil.data.enums.FileEnum;
+import jutil.data.enums.RegexEnum;
 
 /**
  * Classe utilitária para se trabalhar com arquivos
  * 
  * @author Diego Steyner
  */
-public class FileUtils extends AbstractUtils
+public final class FileUtils extends AbstractUtils
 {
-    /**
-     * Tamanho de um byte
-     */
-    public static final Long   UM_BYTE              = new Long("8");
-    
-    /**
-     * Tamanho de um KB
-     */
-    public static final Long   UM_KILOBYTE          = new Long("1024");
-    
-    /**
-     * Tamanho de um MB 
-     */
-    public static final Long   UM_MEGABYTE          = new Long("1048576");
-    
-    /**
-     * Tamanho de um GB
-     */
-    public static final Long   UM_GIGABYTE          = new Long("1073741824");
-    
-    /**
-     * Tamanho de um TB
-     */
-    public static final Long   UM_TERABYTE          = new Long("1099511627776");
-    
-    /**
-     * Tamanho de um PB
-     */
-    public static final Long   UM_PETABYTE          = new Long("1125899906842624");
-
-    /**
-     * Sulfixo padronização para o tamanho em  byte 
-     */
-    public static final String SULFIX_BYTE          = "b";
-    
-    /**
-     * Sulfixo padronização para o tamanho em PB 
-     */
-    public static final String SULFIX_PETABYTE      = "PB";
-    
-    /**
-     * Sulfixo padronização para o tamanho em TB 
-     */
-    public static final String SULFIX_TERABYTE      = "TB";
-    
-    /**
-     * Sulfixo padronização para o tamanho em GB 
-     */
-    public static final String SULFIX_GIGABYTE      = "GB";
-    
-    /**
-     * Sulfixo padronização para o tamanho em MB 
-     */
-    public static final String SULFIX_MEGABYTE      = "MB";
-    
-    /**
-     * Sulfixo padronização para o tamanho em KB 
-     */
-    public static final String SULFIX_KILOBYTE      = "KB";
-
-    
-    public static final int    ORDER_BY_FOLDER      = 0;
-    public static final int    ORDER_BY_FILES       = 1;
-    public static final String REGEX_FIND_EXTENSION = "\\..{3,5}$";
-    
     /**
      * Construtor Privado
      */
@@ -578,7 +516,7 @@ public class FileUtils extends AbstractUtils
      */
     public static String getExtension(String file) throws Exception
     {
-        Matcher mat = Pattern.compile(REGEX_FIND_EXTENSION).matcher(file);
+        Matcher mat = Pattern.compile(RegexEnum.FIND_FILE_EXTENSION.getStringValue()).matcher(file);
         
         if(mat.find())
         {
@@ -593,12 +531,12 @@ public class FileUtils extends AbstractUtils
      * 
      * @param list A Lista de Files
      * 
-     * @param tipo A ordenação pode ser por {@link #ORDER_BY_FILES} ou por {@link #ORDER_BY_FOLDER}
+     * @param tipo O {@link FileEnum} com o tipo de ordenação
      * 
      * @return A Lista ordenada de acordo o modo escolhido
      * @throws Exception Caso ocorra algum erro uma exceção será lançada
      */
-    public static List<File> orderListFileBy(List<File> list, int tipo) throws Exception
+    public static List<File> orderListFileBy(List<File> list, FileEnum tipo) throws Exception
     {
         int index = 0;
 
@@ -642,7 +580,7 @@ public class FileUtils extends AbstractUtils
      */
     public static String getFileNameWithoutExtension(String arquivo) throws Exception
     {
-        return (arquivo.replaceAll(REGEX_FIND_EXTENSION, ""));
+        return (arquivo.replaceAll(RegexEnum.FIND_FILE_EXTENSION.getStringValue(), ""));
     }
 
     /**
@@ -744,45 +682,42 @@ public class FileUtils extends AbstractUtils
     {
         StringBuilder str = new StringBuilder();
         
-        if (bytes < UM_BYTE)
+        if (bytes < FileEnum.UM_BYTE.getLongValue())
         {
-            return (str.append(new BigDecimal(((double) bytes / UM_BYTE)).setScale(qtdDigitos, RoundingMode.HALF_UP).doubleValue()).append(SULFIX_BYTE).toString());
+            return (str.append(new BigDecimal(((double) bytes / FileEnum.UM_BYTE.getLongValue())).setScale(qtdDigitos, RoundingMode.HALF_UP).doubleValue()).append(FileEnum.SULFIX_BYTE.getStringValue()).toString());
         }
         else
         {
-            if (bytes < UM_KILOBYTE)
+            if (bytes < FileEnum.UM_KILOBYTE.getLongValue())
             {
                 if (bytes < 800)
                 {
-                    return (str.append(new BigDecimal((double) bytes).setScale(qtdDigitos, RoundingMode.HALF_UP).doubleValue()).append(SULFIX_BYTE).toString());
+                    return (str.append(new BigDecimal((double) bytes).setScale(qtdDigitos, RoundingMode.HALF_UP).doubleValue()).append(FileEnum.SULFIX_BYTE.getStringValue()).toString());
                 }
                 
-                return (str.append(((double) bytes / UM_BYTE)).append(SULFIX_BYTE).toString());
+                return (str.append(((double) bytes / FileEnum.UM_BYTE.getLongValue())).append(FileEnum.SULFIX_BYTE.getStringValue()).toString());
             }
             else
             {
-                if (bytes < UM_MEGABYTE)
+                if (bytes < FileEnum.UM_MEGABYTE.getLongValue())
                 {
-                    return (str.append(new BigDecimal(((double) bytes / UM_KILOBYTE)).setScale(qtdDigitos, RoundingMode.HALF_UP).doubleValue()).append(SULFIX_KILOBYTE).toString());
+                    return (str.append(new BigDecimal(((double) bytes / FileEnum.UM_KILOBYTE.getLongValue())).setScale(qtdDigitos, RoundingMode.HALF_UP).doubleValue()).append(FileEnum.SULFIX_KILOBYTE.getStringValue()).toString());
                 }
                 else
                 {
-                    if (bytes < UM_GIGABYTE)
+                    if (bytes < FileEnum.UM_GIGABYTE.getLongValue())
                     {
-                        return (str.append(new BigDecimal(((double) bytes / UM_MEGABYTE)).setScale(qtdDigitos, RoundingMode.HALF_UP).doubleValue()).append(SULFIX_MEGABYTE).toString());
+                        return (str.append(new BigDecimal(((double) bytes / FileEnum.UM_MEGABYTE.getLongValue())).setScale(qtdDigitos, RoundingMode.HALF_UP).doubleValue()).append(FileEnum.SULFIX_MEGABYTE.getStringValue()).toString());
                     }
                     else
                     {
-                        if (bytes < UM_TERABYTE)
+                        if (bytes < FileEnum.UM_TERABYTE.getLongValue())
                         {
-                            return (str.append(new BigDecimal(((double) bytes / UM_GIGABYTE)).setScale(qtdDigitos, RoundingMode.HALF_UP).doubleValue()).append(SULFIX_GIGABYTE).toString());
+                            return (str.append(new BigDecimal(((double) bytes / FileEnum.UM_GIGABYTE.getLongValue())).setScale(qtdDigitos, RoundingMode.HALF_UP).doubleValue()).append(FileEnum.SULFIX_GIGABYTE.getStringValue()).toString());
                         }
-                        else
+                        else if (bytes < FileEnum.UM_PETABYTE.getLongValue())
                         {
-                            if (bytes < UM_PETABYTE)
-                            {
-                                return (str.append(new BigDecimal(((double) bytes / UM_TERABYTE)).setScale(qtdDigitos, RoundingMode.HALF_UP).doubleValue()).append(SULFIX_TERABYTE).toString());
-                            }
+                        	return (str.append(new BigDecimal(((double) bytes / FileEnum.UM_TERABYTE.getLongValue())).setScale(qtdDigitos, RoundingMode.HALF_UP).doubleValue()).append(FileEnum.SULFIX_TERABYTE.getStringValue()).toString());
                         }
                     }
                 }

@@ -14,7 +14,7 @@ import jutil.utils.MathUtils;
  * 
  * @author Diego Steyner
  */
-public class Code128 extends AbstractUtils
+public final class Code128 extends AbstractUtils
 {
     private String                        data                  = "";
     private Hashtable<Character, Integer> barcodeTable     = new Hashtable<Character, Integer>();
@@ -57,8 +57,7 @@ public class Code128 extends AbstractUtils
         final MathUtils util = new MathUtils();
 
         barcode = new BufferedImage(width, widthImage, BufferedImage.TYPE_INT_ARGB);
-        BufferedImage bufferTemp = new BufferedImage(width, widthImage, BufferedImage.TYPE_INT_RGB);
-
+        
         Graphics2D g2d = barcode.createGraphics();
         g2d.setColor(Color.black);
 
@@ -89,7 +88,7 @@ public class Code128 extends AbstractUtils
                 }
             }
         }
-
+        
         // Redesenhando as barras nas cores escolhidas
         for (int x = 0; x < barcode.getWidth(); x++)
         {
@@ -99,19 +98,16 @@ public class Code128 extends AbstractUtils
 
                 if (rgba == 0 || rgba == -1)
                 {
-                    bufferTemp.setRGB(x, y, backgroundColor.getRGB());
+                	barcode.setRGB(x, y, backgroundColor.getRGB());
                 }
                 else if (rgba == -16777216)
                 {
-                    bufferTemp.setRGB(x, y, barColor.getRGB());
+                	barcode.setRGB(x, y, barColor.getRGB());
                 }
             }
         }
 
-        barcode = bufferTemp;
-        
-        bufferTemp.flush();
-        bufferTemp = null;
+        barcode.flush();
     
         return(barcode);
     }

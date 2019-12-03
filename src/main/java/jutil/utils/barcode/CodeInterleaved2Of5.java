@@ -12,7 +12,7 @@ import jutil.abstracts.AbstractUtils;
  * 
  * @author Diego Steyner
  */
-public class CodeInterleaved2Of5 extends AbstractUtils
+public final class CodeInterleaved2Of5 extends AbstractUtils
 {
     public static final int    LARGURA_IMG_PADRAO     = 200;
     public static final int    ALTURA_IMG_PADRAO      = 150;

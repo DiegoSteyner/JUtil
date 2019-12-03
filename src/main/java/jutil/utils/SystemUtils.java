@@ -22,7 +22,7 @@ import jutil.abstracts.AbstractUtils;
  * 
  * @author Diego Steyner
  */
-public class SystemUtils extends AbstractUtils
+public final class SystemUtils extends AbstractUtils
 {
     public static final int    LEFT_CLICK                   = InputEvent.BUTTON1_MASK;
     public static final int    RIGHT_CLICK                  = InputEvent.BUTTON3_MASK;
@@ -250,7 +250,7 @@ public class SystemUtils extends AbstractUtils
      */
     public static boolean setStringInClipboard(String str) throws Exception
     {
-        if(StringUtils.isNotNullOrEmpty(Boolean.FALSE, str))
+        if(StringUtils.isNotNullOrEmptyTrim(str))
         {
             StringSelection stringSelection = new StringSelection(str);
             ClipboardOwner text = stringSelection;

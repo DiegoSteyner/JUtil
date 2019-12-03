@@ -48,6 +48,50 @@ public class SortUtils extends AbstractUtils
     }
     
     /**
+     * O bubble sort, ou ordenação por flutuação (literalmente "por bolha"), é um algoritmo de ordenação dos mais simples. A ideia é percorrer o vetor diversas vezes, 
+     * a cada passagem fazendo flutuar para o topo o maior elemento da sequência. Essa movimentação lembra a forma como as bolhas em um tanque de água procuram seu próprio nível, 
+     * e disso vem o nome do algoritmo. No melhor caso, o algoritmo executa n2 / 2 operações relevantes, onde n representa o número de elementos do vector. No pior caso, são feitas 
+     * 2n2 operações. No caso médio, são feitas 5n2 / 2 operações. A complexidade desse algoritmo é de Ordem quadrática. Por isso, ele não é recomendado para programas que precisem 
+     * de velocidade e operem com quantidade elevada de dados.
+     *
+     * @param vetor O vetor de String que se deseja Ordenar
+     * @throws Exception Caso ocorra algum erro uma exceção será lançada
+     */
+    public static String [] stringBubbleSort(String [] vetor) {
+        Vector<String> v = new Vector<>();
+        
+        for(int i=0; i<vetor.length; i++)
+        {
+        	v.addElement(vetor[i]);
+        }
+        
+        int n = v.size();
+        boolean swap = true;
+        String tmp = null;
+        
+        while ( swap ) 
+        {
+           swap = false;
+        
+           for(int i=0; i<(n-1); i++) 
+           {
+              if ( ((String)v.elementAt(i)).compareTo(((String)v.elementAt(i+1)) ) > 0 ) 
+              {
+                 tmp = (String)v.elementAt(i+1);
+                 v.removeElementAt( i+1 );
+                 v.insertElementAt( tmp, i );
+                 swap = true;
+              }
+           }
+        }
+        
+        String [] out = new String [ n ];
+        v.copyInto(out);
+        
+        return out;
+     }
+    
+    /**
      * O bubble sort, ou ordenação por flutuação (literalmente "por bolha"), é um algoritmo de ordenação dos mais simples. A ideia é percorrer o vector diversas vezes, 
      * a cada passagem fazendo flutuar para o topo o maior elemento da sequência. Essa movimentação lembra a forma como as bolhas em um tanque de água procuram seu próprio nível, 
      * e disso vem o nome do algoritmo. No melhor caso, o algoritmo executa n2 / 2 operações relevantes, onde n representa o número de elementos do vector. No pior caso, são feitas 

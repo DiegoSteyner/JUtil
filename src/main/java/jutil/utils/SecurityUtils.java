@@ -29,7 +29,7 @@ import jutil.abstracts.AbstractUtils;
  * 
  * @author Diego Steyner
  */
-public class SecurityUtils extends AbstractUtils
+public final class SecurityUtils extends AbstractUtils
 {
     public static final String ALGORITHM_MD5             = "MD5";
     public static final String ALGORITHM_SHA_1           = "SHA-1";
@@ -285,12 +285,12 @@ public class SecurityUtils extends AbstractUtils
      */
     public static String cript(String str, String algorithm, String password) throws Exception
     {
-        Cipher c = Cipher.getInstance(StringUtils.ifNullOrEmptyGet(Boolean.FALSE, algorithm, ALGORITMO_BLOWFISH));
-        SecretKey k = new SecretKeySpec(StringUtils.ifNullOrEmptyGet(Boolean.FALSE, password, PASS_FRASE).getBytes(), StringUtils.ifNullOrEmptyGet(Boolean.FALSE, algorithm, ALGORITMO_BLOWFISH));
+        Cipher c = Cipher.getInstance(StringUtils.ifNullOrEmptyTrimGet(algorithm, ALGORITMO_BLOWFISH));
+        SecretKey k = new SecretKeySpec(StringUtils.ifNullOrEmptyTrimGet(password, PASS_FRASE).getBytes(), StringUtils.ifNullOrEmptyTrimGet(algorithm, ALGORITMO_BLOWFISH));
         
         c.init(Cipher.ENCRYPT_MODE, k);
 
-        return (StringUtils.byteArrayToBase64String(c.doFinal(str.getBytes())).trim());
+        return (Base64Utils.byteArrayToBase64String(c.doFinal(str.getBytes())).trim());
     }
 
     /**
@@ -305,11 +305,11 @@ public class SecurityUtils extends AbstractUtils
      */
     public static String decript(String str, String algorithm, String password) throws Exception
     {
-        Cipher c = Cipher.getInstance(StringUtils.ifNullOrEmptyGet(Boolean.FALSE, algorithm, ALGORITMO_BLOWFISH));
-        SecretKey k = new SecretKeySpec(StringUtils.ifNullOrEmptyGet(Boolean.FALSE, password, PASS_FRASE).getBytes(), StringUtils.ifNullOrEmptyGet(Boolean.FALSE, algorithm, ALGORITMO_BLOWFISH));
+        Cipher c = Cipher.getInstance(StringUtils.ifNullOrEmptyTrimGet(algorithm, ALGORITMO_BLOWFISH));
+        SecretKey k = new SecretKeySpec(StringUtils.ifNullOrEmptyTrimGet(password, PASS_FRASE).getBytes(), StringUtils.ifNullOrEmptyTrimGet(algorithm, ALGORITMO_BLOWFISH));
 
         c.init(Cipher.DECRYPT_MODE, k);
-        byte b[] = StringUtils.base64StringToByteArray(str);
+        byte b[] = Base64Utils.base64StringToByteArray(str);
         byte b1[] = c.doFinal(b);
         
         return (new String(b1));
@@ -358,7 +358,7 @@ public class SecurityUtils extends AbstractUtils
      */
     public static KeyPair generatePrivatePublicKey(String algorithm) throws Exception
     {
-        KeyPairGenerator keyGen = KeyPairGenerator.getInstance(StringUtils.ifNullOrEmptyGet(Boolean.FALSE, algorithm, ALGORITMO_RSA));
+        KeyPairGenerator keyGen = KeyPairGenerator.getInstance(StringUtils.ifNullOrEmptyTrimGet(algorithm, ALGORITMO_RSA));
         keyGen.initialize(1024);
         
         return(keyGen.genKeyPair());
@@ -401,7 +401,7 @@ public class SecurityUtils extends AbstractUtils
      */
     public static PrivateKey generatePrivateKeyFromBase64(String str, String algorithm) throws Exception
     {
-        KeyFactory kf = KeyFactory.getInstance(StringUtils.ifNullOrEmptyGet(Boolean.FALSE, algorithm, ALGORITMO_RSA));
+        KeyFactory kf = KeyFactory.getInstance(StringUtils.ifNullOrEmptyTrimGet(algorithm, ALGORITMO_RSA));
         
         return(kf.generatePrivate(new PKCS8EncodedKeySpec(DatatypeConverter.parseBase64Binary(str))));
     }
@@ -417,7 +417,7 @@ public class SecurityUtils extends AbstractUtils
      */
     public static PublicKey generatePublicKeyFromBase64(String str, String algorithm) throws Exception
     {
-        KeyFactory pk = KeyFactory.getInstance(StringUtils.ifNullOrEmptyGet(Boolean.FALSE, algorithm, ALGORITMO_RSA));
+        KeyFactory pk = KeyFactory.getInstance(StringUtils.ifNullOrEmptyTrimGet(algorithm, ALGORITMO_RSA));
         
         return(pk.generatePublic(new X509EncodedKeySpec(DatatypeConverter.parseBase64Binary(str))));
     }
@@ -447,7 +447,7 @@ public class SecurityUtils extends AbstractUtils
     }
     
     /**
-     * Método que assinada um array de bytes com uma chave privada
+     * Método que assina um array de bytes com uma chave privada
      * 
      * @param data O dado a ser assinado
      * @param key A chave privada

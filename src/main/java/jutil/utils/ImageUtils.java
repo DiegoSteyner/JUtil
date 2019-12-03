@@ -48,7 +48,6 @@ import jutil.implementation.TransferableImp;
  * 
  * @author Diego Steyner
  */
-@SuppressWarnings("restriction")
 public class ImageUtils extends AbstractUtils
 {
     public static final double ROTATE_IMAGE_90  = 90.0;
@@ -383,14 +382,14 @@ public class ImageUtils extends AbstractUtils
      * 
      * @param file O endereço completo com extensão e tudo onde o arquivo será gravado
      * @param buffer O {@link BufferedImage} com a imagem
-     * @param extension A extensão do arquivo
+     * @param formatName A extensão do arquivo
      * 
      * @return Se True, A imagem foi salva com sucesso.
      * @exception Exception Caso ocorra algum erro uma excessão será lançada
      */
-    public static boolean bufferedImageToFile(BufferedImage buffer, File file, String extension) throws Exception
+    public static boolean bufferedImageToFile(BufferedImage buffer, File file, String formatName) throws Exception
     {
-        return(ImageIO.write(buffer, extension, file));
+        return(ImageIO.write(buffer, formatName, file));
     }
     
     /**

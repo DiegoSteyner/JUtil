@@ -1,4 +1,4 @@
-package jutil.data;
+package jutil.data.dtos;
 
 import java.io.PrintStream;
 import java.io.Serializable;
@@ -11,7 +11,7 @@ import javax.swing.text.JTextComponent;
  * @author Diego Steyner
  *
  */
-public class PrintOutput implements Serializable
+public class PrintOutputDTO implements Serializable
 {
     private static final long serialVersionUID = -2424180574783622742L;
     
@@ -24,7 +24,7 @@ public class PrintOutput implements Serializable
      * @param printOut O {@link PrintStream} que deve ser chamado em caso de impressão
      * @param componentOut o {@link JTextComponent} que deve ser chamado em caso de impressão
      */
-    public PrintOutput(PrintStream printOut, JTextComponent componentOut)
+    public PrintOutputDTO(PrintStream printOut, JTextComponent componentOut)
     {
         super();
         this.printOut = printOut;
@@ -36,7 +36,7 @@ public class PrintOutput implements Serializable
      * 
      * @param printOut O {@link PrintStream} que deve ser chamado em caso de impressão
      */
-    public PrintOutput(PrintStream printOut)
+    public PrintOutputDTO(PrintStream printOut)
     {
         super();
         this.printOut = printOut;
@@ -47,7 +47,7 @@ public class PrintOutput implements Serializable
      * 
      * @param componentOut o {@link JTextComponent} que deve ser chamado em caso de impressão
      */
-    public PrintOutput(JTextComponent componentOut)
+    public PrintOutputDTO(JTextComponent componentOut)
     {
         super();
         this.componentOut = componentOut;
@@ -128,7 +128,7 @@ public class PrintOutput implements Serializable
         {
             return false;
         }
-        PrintOutput other = (PrintOutput) obj;
+        PrintOutputDTO other = (PrintOutputDTO) obj;
         if (componentOut == null)
         {
             if (other.componentOut != null)

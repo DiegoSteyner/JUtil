@@ -15,7 +15,7 @@ import jutil.abstracts.AbstractUtils;
 public class ReflectionUtils extends AbstractUtils
 {
     /**
-     * Construtor privado
+     * Construtor padrão
      */
     public ReflectionUtils()
     {

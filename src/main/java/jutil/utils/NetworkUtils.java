@@ -26,6 +26,7 @@ import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 import jutil.abstracts.AbstractUtils;
+import jutil.data.enums.RegexEnum;
 import jutil.implementation.TrustManagerX509Imp;
 
 /**
@@ -33,15 +34,10 @@ import jutil.implementation.TrustManagerX509Imp;
  * 
  * @author Diego Steyner
  */
-public class NetworkUtils extends AbstractUtils
+public final class NetworkUtils extends AbstractUtils
 {
 
     public static final String CONNECTION_TYPE_TLS = "TLS";
-
-    /**
-     * Regex para validação de endereços IP
-     */
-    public static final String  REGEX_IP    = "(([0-1]?[0-9]{1,2}\\.)|(2[0-4][0-9]\\.)|(25[0-5]\\.)){3}(([0-1]?[0-9]{1,2})|(2[0-4][0-9])|(25[0-5]))";
 
     /**
      * Prefixo do protocolo HTTP
@@ -110,7 +106,7 @@ public class NetworkUtils extends AbstractUtils
      */
     public static boolean validarIp(String str) throws Exception
     {
-        return (Pattern.compile(REGEX_IP).matcher(str).matches());
+        return (Pattern.compile(RegexEnum.CHECK_IP_NUMBER.getStringValue()).matcher(str).matches());
     }
 
     /**
@@ -123,7 +119,7 @@ public class NetworkUtils extends AbstractUtils
      */
     public static String getHostName(String ip) throws Exception
     {
-        if (StringUtils.isNullOrEmpty(Boolean.TRUE, ip))
+        if (StringUtils.isNullOrEmptyTrim(ip))
         {
             throw new Exception("O IP informado para verificação está nulo ou vazio");
         }
@@ -320,7 +316,7 @@ public class NetworkUtils extends AbstractUtils
      */
     public static boolean downloadFile(String fileURL, String saveToDir) throws Exception
     {
-        if (StringUtils.isNullOrEmpty(Boolean.TRUE, fileURL))
+        if (StringUtils.isNullOrEmptyTrim(fileURL))
         {
             throw new Exception("A URL passada está vazia ou nula, por favor, passe uma URL válida");
         }
@@ -415,7 +411,7 @@ public class NetworkUtils extends AbstractUtils
      */
     public static X509Certificate[] getHandshakeConnectionCertificates(String host, int port, String connectionType, int timeout, KeyStore ks) throws Exception
     {
-        SSLContext context = SSLContext.getInstance(StringUtils.ifNullOrEmptyGet(Boolean.TRUE, connectionType, CONNECTION_TYPE_TLS));
+        SSLContext context = SSLContext.getInstance(StringUtils.ifNullOrEmptyTrimGet(connectionType, CONNECTION_TYPE_TLS));
         TrustManagerFactory tfactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
 
         tfactory.init(ks);

@@ -14,13 +14,8 @@ import jutil.abstracts.AbstractUtils;
  * 
  * @author Diego Steyner
  */
-public class SerializableUtils extends AbstractUtils
+public final class SerializableUtils extends AbstractUtils
 {
-    /**
-     * Uma das possiveis extensões de arquivo serializados.
-     */
-    public static final String EXTENSAO_SERIALIZAR = ".ser";
-
     /**
      * Construtor privado
      */

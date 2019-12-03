@@ -13,7 +13,7 @@ import jutil.abstracts.AbstractUtils;
  * 
  * @author Diego Steyner
  */
-public class ClassLoaderUtils extends AbstractUtils
+public final class ClassLoaderUtils extends AbstractUtils
 {
     /**
      * Construtor privado

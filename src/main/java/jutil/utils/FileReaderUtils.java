@@ -20,7 +20,7 @@ import jutil.abstracts.AbstractUtils;
  * 
  * @author Diego Steyner
  */
-public class FileReaderUtils extends AbstractUtils
+public final class FileReaderUtils extends AbstractUtils
 {
     /**
      * Construtor privado
@@ -124,7 +124,7 @@ public class FileReaderUtils extends AbstractUtils
         BufferedReader buffer = new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName(charset)));
         LinkedList<String> retorno = new LinkedList<String>();
         
-        Pattern pat = Pattern.compile(StringUtils.ifNullOrEmptyGet(Boolean.TRUE, pattern, ""));
+        Pattern pat = Pattern.compile(StringUtils.ifNullOrEmptyTrimGet(pattern, ""));
 
         while (retorno.add(buffer.readLine()))
         {

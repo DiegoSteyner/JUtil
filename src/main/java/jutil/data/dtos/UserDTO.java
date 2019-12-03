@@ -1,15 +1,17 @@
-package jutil.utils.ldap;
+package jutil.data.dtos;
 
 import java.io.Serializable;
 
 import javax.naming.directory.Attributes;
+
+import jutil.utils.LDAPUtils;
 
 /**
  * Classe para armazenamento de valores (Value Object) dos resultados de pesquisa da classe {@link LDAPUtils}
  * 
  * @author Diego Steyner
  */
-public class User implements Serializable
+public class UserDTO implements Serializable
 {
     private static final long serialVersionUID = 8840071268458620561L;
     
@@ -24,7 +26,7 @@ public class User implements Serializable
 	 * @param attr O objeto com os atributos do usuário
 	 * @throws Exception Caso algum erro ocorra, uma exceção será lançada.
 	 */
-	public User(Attributes attr) throws Exception 
+	public UserDTO(Attributes attr) throws Exception 
 	{
 		userPrincipal = (String) attr.get(LDAPUtils.LDAP_ATTRIBUTE_USER_PRINCIPAL_NAME).get();
 		commonName = (String) attr.get(LDAPUtils.LDAP_ATTRIBUTE_CN).get();
@@ -148,7 +150,7 @@ public class User implements Serializable
         {
             return false;
         }
-        User other = (User) obj;
+        UserDTO other = (UserDTO) obj;
         if (blockChangePassword != other.blockChangePassword)
         {
             return false;

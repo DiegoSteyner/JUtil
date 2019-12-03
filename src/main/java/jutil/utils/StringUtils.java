@@ -9,20 +9,17 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import jutil.abstracts.AbstractUtils;
+import jutil.data.enums.RegexEnum;
 
 /**
  * Classe utilitaria para se trabalhar com Strings
  * 
  * @author Diego Steyner
  */
-public class StringUtils extends AbstractUtils
+public final class StringUtils extends AbstractUtils
 {
-    public static final String   REGEX_FIND_NON_DIGIT     = "\\D";
     public static final String[] DIGITOS_HEXADECIMAIS     = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f" };
-    public static final String   REGEX_ONLY_NUMBERS       = "^\\d+$";
-    public static final String   REGEX_TRIM_RIGHT         = "\\s+$";
-    public static final String   REGEX_TRIM_LEFT          = "^\\s+";
-    public static final String   REGEX_ESPACOS_DUPLICADOS = "\\s+";
+    
     
     /**
      * Construtor privado
@@ -42,20 +39,7 @@ public class StringUtils extends AbstractUtils
      */
     public static boolean containsEspecials(String str) throws Exception
     {
-        char s[] = getEspecialsLetters().toCharArray();
-        
-        for (char i : s)
-        {
-            for (int k = 0; k < str.length(); k++)
-            {
-                if (str.charAt(k) == i)
-                {
-                    return (Boolean.TRUE);
-                }
-            }
-        }
-        
-        return (Boolean.FALSE);
+    	return(Pattern.compile(".*[".concat(getEspecialsLetters()).concat("].*")).matcher(str).find());
     }
 
     /**
@@ -199,12 +183,7 @@ public class StringUtils extends AbstractUtils
      */
     public static String clearChars(String str, String strs) throws Exception
     {
-        String temp = str;
-        for (int i = 0; i < strs.length(); i++)
-        {
-            temp = temp.replace(String.valueOf(strs.charAt(i)), "");
-        }
-        return (temp);
+    	return(str.replaceAll("[".concat(strs).concat("]"), ""));
     }
 
     /**
@@ -360,38 +339,36 @@ public class StringUtils extends AbstractUtils
      */
     public static boolean onlyNumbers(String str) throws Exception
     {
-        return (str.matches(REGEX_ONLY_NUMBERS));
+        return (str.matches(RegexEnum.ONLY_NUMBERS.getStringValue()));
     }
 
     /**
-     * Metodo que verifica se uma String é nula ou vazia
+     * Metodo que verifica se uma String é nula ou vazia levando em conta se ela só tem espaço
      *
      * @param str A String que se deseja verificar
-     * @param trim Se True, Será chamado o método String.trim() antes da comparação
      *
      * @return Se True, A String é nula ou vazia
      * @throws Exception Caso ocorra algum erro uma exceção será lançada
      */
-    public static boolean isNullOrEmpty(boolean trim, String... str) throws Exception
+    public static boolean isNullOrEmptyTrim(String... str)
     {
-        if (str != null)
-        {
-            for (int i = 0; i < str.length; i++)
-            {
-                if (str[i] == null)
-                {
-                    return (Boolean.TRUE);
-                }
-                if (((trim) ? str[i].trim().length() : str[i].length()) == 0)
-                {
-                    return (Boolean.TRUE);
-                }
-            }
-
-            return (Boolean.FALSE);
-        }
-
-        return (Boolean.TRUE);
+    	if(str != null)
+    	{
+    		for (int i = 0; i < str.length; i++) 
+    		{
+    			if(str[i] == null)
+    			{
+    				return(true);
+    			}
+    			
+    			if(!Pattern.compile(".").matcher(str[i].trim()).find())
+    			{
+    				return(true);
+    			}
+    		}
+    	}
+    	
+    	return(false);
     }
     
     /**
@@ -404,9 +381,9 @@ public class StringUtils extends AbstractUtils
      * 
      * @throws Exception Caso ocorra algum erro uma exceção será lançada
      */
-    public static boolean isNotNullOrEmpty(boolean trim, String... str) throws Exception
+    public static boolean isNotNullOrEmptyTrim(String... str) throws Exception
     {
-        return (!isNullOrEmpty(trim, str));
+        return (!isNullOrEmptyTrim(str));
     }
 
     /**
@@ -419,9 +396,9 @@ public class StringUtils extends AbstractUtils
      * @return Se a String for nula ou vazia, será retornada a variável passada, caso não, será retornada a própria String
      * @throws Exception Caso algum erro ocorra uma excessao sera lancada
      */
-    public static String ifNullOrEmptyGet(boolean trim, String str, String retorno) throws Exception
+    public static String ifNullOrEmptyTrimGet(String str, String retorno) throws Exception
     {
-        if (isNullOrEmpty(trim, str))
+        if (isNullOrEmptyTrim(str))
         {
             return (retorno);
         }
@@ -490,7 +467,7 @@ public class StringUtils extends AbstractUtils
      */
     public static String removeDuplicateSpaces(String str) throws Exception
     {
-        return(str.replaceAll(REGEX_ESPACOS_DUPLICADOS, " "));
+        return(str.replaceAll(RegexEnum.REPLACE_ESPACOS_DUPLICADOS.getStringValue(), " "));
     }
 
     /**
@@ -778,7 +755,20 @@ public class StringUtils extends AbstractUtils
      */
     public static String trimRight(String str) throws Exception
     {
-        return (Pattern.compile(REGEX_TRIM_RIGHT).matcher(str).replaceAll(""));
+        return (Pattern.compile(RegexEnum.TRIM_SPACES_RIGHT.getStringValue()).matcher(str).replaceAll(""));
+    }
+    
+    /**
+     * Método que faz um trim() somente a direita da String
+     * 
+     * @param str A String que se deseja fazer o Trim()
+     * 
+     * @return A String sem os espaços a direita
+     * @throws Exception Caso ocorra algum erro uma exceção será lançada
+     */
+    public static String trimLeft(String str) throws Exception
+    {
+        return (Pattern.compile(RegexEnum.TRIM_SPACES_LEFT.getStringValue()).matcher(str).replaceAll(""));
     }
 
     /**
@@ -793,36 +783,7 @@ public class StringUtils extends AbstractUtils
      */
     public static String addZeroToLeft(int qtd, int value) throws Exception
     {
-        return (String.format(new StringBuilder().append("%0").append(qtd+String.valueOf(value).length()).append("d").toString(), value));
-    }
-
-    /**
-     * Método que adiciona zeros a esquerda de um número para manter o tamanho fixo
-     * 
-     * @param size O tamanho que a String deve ter
-     * @param value O numero
-     * 
-     * @return A String do número com os zeros adicionados
-     * @throws Exception Caso ocorra algum erro uma exceção será lançada
-     * 
-     * @see https://docs.oracle.com/javase/tutorial/java/data/numberformat.html
-     */
-    public static String formatWithZeroLeft(int size, int value) throws Exception
-    {
-        return (String.format(new StringBuilder().append("%0").append(size).append("d").toString(), value));
-    }
-    
-    /**
-     * Método que faz um trim() somente a direita da String
-     * 
-     * @param str A String que se deseja fazer o Trim()
-     * 
-     * @return A String sem os espaços a direita
-     * @throws Exception Caso ocorra algum erro uma exceção será lançada
-     */
-    public static String trimLeft(String str) throws Exception
-    {
-        return (Pattern.compile(REGEX_TRIM_LEFT).matcher(str).replaceAll(""));
+    	return (String.format("%0"+qtd+"d", value));
     }
 
     /**
@@ -868,7 +829,7 @@ public class StringUtils extends AbstractUtils
      */
     public static String extractNumbers(String str) throws Exception
     {
-        return(str.replaceAll(REGEX_FIND_NON_DIGIT, ""));
+        return(str.replaceAll(RegexEnum.FIND_NON_DIGIT.getStringValue(), ""));
     }
 
     /**
@@ -961,308 +922,6 @@ public class StringUtils extends AbstractUtils
         int d2 = n % 16;
         
         return DIGITOS_HEXADECIMAIS[d1] + DIGITOS_HEXADECIMAIS[d2];
-    }
-
-    /**
-     * Método que converte um Array de Bytes para uma String base 64
-     * 
-     * @param b O Array de Bytes
-     * 
-     * @return A String convertida
-     * @throws Exception Caso algum erro ocorra uma exceção será lançada
-     */
-    public static String byteArrayToBase64String(byte[] b) throws Exception
-    {
-        StringBuilder s = new StringBuilder();
-        
-        // Organizando em grupos de 3 bytes para conversão
-        int size = b.length;
-        int colum = size / 3;
-        int row = size % 3;
-        
-        for (int i = 0; i < colum; ++i)
-        {
-            int j = i * 3;
-            s.append(toBase64(b[j], b[j + 1], b[j + 2]));
-        }
-        
-        if (row == 1)
-        {
-            s.append(toBase64(b[size - 1]));
-        }
-        else if (row == 2)
-        {
-            s.append(toBase64(b[size - 2], b[size - 1]));
-        }
-
-        // Inserindo nova linha a cada 64 caracteres
-        StringBuilder sb = new StringBuilder();
-        
-        size = s.length();
-        colum = size / 64;
-
-        for (int i = 0; i < colum; ++i)
-        {
-            sb.append(s.substring(i * 64, (i + 1) * 64)).append("\n");
-        }
-
-        if ((size % 64) > 0)
-        {
-            sb.append(s.substring(colum * 64, size) ).append("\n");
-        }
-        
-        return sb.toString();
-    }
-
-    /**
-     * Método que executa a transformação de Base64
-     * 
-     * @param b os Grupos de digitos
-     * 
-     * @return A String Base64 do grupo
-     * @throws Exception Caso algum erro ocorra uma exceção será lançada
-     */
-    public static String toBase64(byte... b) throws Exception
-    {
-        int[] group = null;
-        StringBuilder sb = new StringBuilder();
-        String lastAppender = "";
-
-        switch (b.length)
-        {
-            case 1:
-            {
-                group = new int[2];
-
-                group[0] = (b[0] & 0xFC) >>> 2;
-                group[1] = (b[0] & 0x03) << 4;
-                lastAppender = "==";
-
-                break;
-            }
-
-            case 2:
-            {
-                group = new int[3];
-
-                group[0] = (b[0] & 0xFC) >>> 2;
-                group[1] = (b[0] & 0x03) << 4;
-                group[1] |= (b[1] & 0xF0) >> 4;
-                group[2] = (b[1] & 0x0F) << 2;
-                lastAppender = "=";
-
-                break;
-            }
-
-            case 3:
-            {
-                group = new int[4];
-
-                group[0] = (b[0] & 0xFC) >>> 2;
-                group[1] = (b[0] & 0x03) << 4;
-                group[1] |= (b[1] & 0xF0) >> 4;
-                group[2] = (b[1] & 0x0F) << 2;
-                group[2] |= (b[2] & 0xC0) >> 6;
-                group[3] = (b[2] & 0x3F);
-                lastAppender = "";
-
-                break;
-            }
-            default:
-            {
-                return (null);
-            }
-        }
-
-        for (int i = 0; i < group.length; ++i)
-        {
-            sb.append(base64Digit(group[i]));
-        }
-
-        if (lastAppender.isEmpty())
-        {
-            return (sb.toString());
-        }
-        else
-        {
-            return (sb.append(lastAppender).toString());
-        }
-    }
-    
-    /**
-     * Método que calcula o digito Base64 do Inteiro
-     * 
-     * @param i O inteiro que se deseja calcular
-     * @return O dígito calculado
-     * 
-     * @throws Exception Caso algum erro ocorra uma exceção será lançada
-     */
-    public static char base64Digit(int i) throws Exception
-    {
-        if (i < 26)
-        {
-            return (char) ('A' + i);
-        }
-        if (i < 52)
-        {
-            return (char) ('a' + (i - 26));
-        }
-        if (i < 62)
-        {
-            return (char) ('0' + (i - 52));
-        }
-        if (i == 62)
-        {
-            return '+';
-        }
-        else
-        {
-            return '/';
-        }
-    }
-
-    /**
-     * Método que transforma uma String Base 64 em um Byte Array pelo método de comparação
-     * 
-     * @param s A String que se deseja transformar
-     * 
-     * @return O Byte Array Convertido
-     * @throws Exception Caso algum erro ocorra uma exceção será lançada
-     */
-    public static byte[] base64StringToByteArray(String s) throws Exception
-    {
-        StringBuilder str = new StringBuilder();
-        
-        for (int i = 0; i < str.length(); ++i)
-        {
-            char c = str.charAt(i);
-
-            if (c == '\n')
-            {
-                continue;
-            }
-
-            else if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '+' || c == '/')
-            {
-                str.append(c);
-            }
-            else if (c == '=')
-            {
-                break;
-            }
-            else
-            {
-                throw new Exception();
-            }
-        }
-
-        int len = str.length();
-        int n = 3 * (len / 4);
-
-        switch (len % 4)
-        {
-            case 1:
-            {
-                throw new Exception();
-            }
-            case 2:
-            {
-                len += 2;
-                n += 1;
-                str.append("==");
-                
-                break;
-            }
-            case 3:
-            {
-                ++len;
-                n += 2;
-                str.append("=");
-                
-                break;
-            }
-        }
-
-        byte[] retorno = new byte[n];
-
-        for (int i = 0; i < len / 4; ++i)
-        {
-            byte[] temp = base64ToBytes(str.substring(4 * i, 4 * (i + 1)));
-            
-            for (int j = 0; j < temp.length; ++j)
-            {
-                retorno[3 * i + j] = temp[j];
-            }
-        }
-        
-        return retorno;
-    }
-
-    /**
-     * Método que transforma uma String Base 64 em um Byte Array pelo método de sobreposição
-     * 
-     * @param str A String que se deseja transformar
-     * 
-     * @return O Byte Array Convertido
-     * @throws Exception Caso algum erro ocorra uma exceção será lançada
-     */
-    public static byte[] base64ToBytes(String str) throws Exception
-    {
-        int len = 0;
-        for (int i = 0; i < str.length(); ++i)
-        {
-            if (str.charAt(i) != '=')
-            {
-                ++len;
-            }
-        }
-
-        int[] group = new int[len];
-        
-        for (int i = 0; i < len; ++i)
-        {
-            char c = str.charAt(i);
-
-            if (c >= 'A' && c <= 'Z')
-            {
-                group[i] = c - 'A';
-            }
-            else if (c >= 'a' && c <= 'z')
-            {
-                group[i] = c - 'a' + 26;
-            }
-            else if (c >= '0' && c <= '9')
-            {
-                group[i] = c - '0' + 52;
-            }
-            else if (c == '+')
-            {
-                group[i] = 62;
-            }
-            else if (c == '/')
-            {
-                group[i] = 63;
-            }
-        }
-
-        byte[] retorno = new byte[len - 1];
-        switch (len)
-        {
-            case 4:
-            {
-                retorno[2] = (byte) ((((group[2]) & 0x03) << 6) | group[3]);
-            }
-            case 3:
-            {
-                retorno[1] = (byte) ((((group[1]) & 0x0F) << 4) | ((group[2] & 0x3C) >>> 2));
-            }
-            case 2:
-            {
-                retorno[0] = (byte) ((group[0] << 2) | ((group[1] & 0x30) >>> 4));
-            }
-        }
-
-        return retorno;
     }
 
     /**

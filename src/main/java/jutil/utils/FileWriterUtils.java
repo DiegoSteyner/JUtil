@@ -1,10 +1,16 @@
 
 package jutil.utils;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import jutil.abstracts.AbstractUtils;
 
@@ -13,7 +19,7 @@ import jutil.abstracts.AbstractUtils;
  * 
  * @author Diego Steyner
  */
-public class FileWriterUtils extends AbstractUtils 
+public final class FileWriterUtils extends AbstractUtils 
 {
     /**
      * Construtor privado
@@ -33,9 +39,10 @@ public class FileWriterUtils extends AbstractUtils
      * o controle de novas linhas deve ser feito através do caracter de controle \n
      * 
      * @return Se True, O conteúdo foi escrito com suscesso
+     * @throws IOException Caso ocorra algum erro na escrita, uma exceção será lançada
      * @throws Exception Caso ocorra algum erro uma exceção será lançada
      */
-    public static boolean writerContent(File file, String content, String charset, boolean append, boolean createNewLine) throws Exception
+    public static boolean writerContent(File file, String content, String charset, boolean append, boolean createNewLine) throws IOException
     {
         PrintWriter w = new PrintWriter(new FileWriter(file, append), true);
         
@@ -50,6 +57,22 @@ public class FileWriterUtils extends AbstractUtils
         
         w.close();
         return(Boolean.TRUE);
+    }
+    
+    public static void writeContentToFile(File file, String content, Charset charset) throws IOException
+    {
+		try (FileWriter writer = new FileWriter(file); BufferedWriter bw = Files.newBufferedWriter(file.toPath(), charset)) 
+		{
+			bw.write(content);
+		}
+    }
+    
+    public static void wrteContentBuffer(Path file, byte[] data) throws IOException
+    {
+		try (OutputStream out = new BufferedOutputStream(Files.newOutputStream(file))) 
+		{
+			out.write(data, 0, data.length);
+		} 
     }
     
     /**

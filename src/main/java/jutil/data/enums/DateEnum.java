@@ -1,4 +1,4 @@
-package jutil.data;
+package jutil.data.enums;
 
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -10,7 +10,7 @@ import jutil.utils.DateUtils;
  * 
  * @author Diego Steyner
  */
-public enum DateConstants
+public enum DateEnum
 {
     FORMATO_PADRAO(DateFormat.DEFAULT),
     FORMATO_MEDIO(DateFormat.MEDIUM),
@@ -40,7 +40,7 @@ public enum DateConstants
      * 
      * @param intValue O valor String com o qual a constante será inicializada
      */
-    private DateConstants(String stringValue)
+    private DateEnum(String stringValue)
     {
         this.stringValue = stringValue;
     }
@@ -50,7 +50,7 @@ public enum DateConstants
      * 
      * @param intValue O valor inteiro com o qual a constante será inicializada
      */
-    private DateConstants(int intValue)
+    private DateEnum(int intValue)
     {
         this.intValue = intValue;
     }

@@ -11,7 +11,7 @@ import jutil.abstracts.AbstractUtils;
  * 
  * @author Diego Steyner
  */
-public class MathUtils extends AbstractUtils
+public final class MathUtils extends AbstractUtils
 {
     public static final int ARREDONDAR_PARA_BAIXO = 0;
     public static final int ARREDONDAR_PARA_CIMA = 1;

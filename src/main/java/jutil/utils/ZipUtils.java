@@ -303,7 +303,7 @@ public class ZipUtils extends AbstractUtils
             zos = new ZipOutputStream(bos);
             String root = "";
             
-            if(StringUtils.isNullOrEmpty(Boolean.TRUE, dir))
+            if(StringUtils.isNullOrEmptyTrim(dir))
             {
                 if(file.getParent().endsWith("\\") || file.getParent().endsWith("/"))
                 {

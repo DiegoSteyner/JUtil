@@ -11,14 +11,14 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import jutil.abstracts.AbstractUtils;
-import jutil.data.DateConstants;
+import jutil.data.enums.DateEnum;
 
 /**
  * Classe utilitária para se trabalhar com datas
  * 
  * @author Diego Steyner
  */
-public class DateUtils extends AbstractUtils
+public final class DateUtils extends AbstractUtils
 {
     /**
      * Construtor padrão privada
@@ -59,12 +59,12 @@ public class DateUtils extends AbstractUtils
      * Método que retorna a data atual como uma String baseado no padrão interno da VM
      * 
      * @param date A data que se deseja converter
-     * @param format O {@link DateConstants} do formado desejado
+     * @param format O {@link DateEnum} do formado desejado
      * 
      * @return A data em String formatada conforme o valor passado 
      * @throws Exception Caso ocorra algum erro uma exceção será lançada
      */
-    public static String dateToString(Date date, DateConstants format) throws Exception
+    public static String dateToString(Date date, DateEnum format) throws Exception
     {
         return (DateFormat.getDateInstance(format.getIntValue()).format(new Date()));
     }
@@ -87,12 +87,12 @@ public class DateUtils extends AbstractUtils
      * Método que faz o parse de uma String para um Date
      * 
      * @param date A String com a data que se deseja tranformar
-     * @param format O {@link DateConstants} do formato atual da String
+     * @param format O {@link DateEnum} do formato atual da String
      * 
      * @return O objeto {@link Date}
      * @throws Exception Caso ocorra algum erro uma exceção será lançada
      */
-    public static Date stringToDate(String date, DateConstants format) throws Exception
+    public static Date stringToDate(String date, DateEnum format) throws Exception
     {
         return (DateFormat.getDateInstance(format.getIntValue()).parse(date));
     }
@@ -101,14 +101,14 @@ public class DateUtils extends AbstractUtils
      * Método que adiciona ou diminui DIAS, MESES, ANOS, HORAS, MINUTOS e SEGUNDOS a data atual ajustando os valores conforme necessário
      * 
      * @param date A data que se deseja manipular
-     * @param operation O {@link DateConstants} da operação desejada
-     * @param field O {@link DateConstants} do campo que se deseja manipular
+     * @param operation O {@link DateEnum} da operação desejada
+     * @param field O {@link DateEnum} do campo que se deseja manipular
      * @param value A quantidade que se deseja adicionar ou remover
      * 
      * @return Uma nova data com o campo desejado alterado de acordo com o valor passado
      * @throws Exception Caso ocorra algum erro uma exceção será lançada
      */
-    public static Date onDate(Date date, DateConstants operation, DateConstants field, int value) throws Exception
+    public static Date onDate(Date date, DateEnum operation, DateEnum field, int value) throws Exception
     {
         GregorianCalendar cal = new GregorianCalendar();
         cal.setTime(date);
@@ -140,18 +140,18 @@ public class DateUtils extends AbstractUtils
      * Método que adiciona ou diminui DIAS, MESES, ANOS, HORAS, MINUTOS e SEGUNDOS a data atual ajustando os valores conforme necessário
      * 
      * @param date A data que se deseja manipular
-     * @param operation O {@link DateConstants} da operação desejada
-     * @param values Um {@link Map} com as {@link DateConstants} dos campos que se deseja adicionar ou remover junto com a quantidades desejadas
+     * @param operation O {@link DateEnum} da operação desejada
+     * @param values Um {@link Map} com as {@link DateEnum} dos campos que se deseja adicionar ou remover junto com a quantidades desejadas
      * 
      * @return Uma nova data com o campo desejado alterado de acordo com o valor passado
      * @throws Exception Caso ocorra algum erro uma exceção será lançada
      */
-    public static Date onDate(Date date, DateConstants operation, Map<DateConstants, Integer> values) throws Exception
+    public static Date onDate(Date date, DateEnum operation, Map<DateEnum, Integer> values) throws Exception
     {
         GregorianCalendar cal = new GregorianCalendar();
         cal.setTime(date);
         
-        for(DateConstants field : values.keySet())
+        for(DateEnum field : values.keySet())
         {
             switch (operation)
             {
@@ -181,12 +181,12 @@ public class DateUtils extends AbstractUtils
      * Método que retorna um campo de uma determinada data
      * 
      * @param date  A data que se deseja extrair o campo
-     * @param field O {@link DateConstants} do campo desejado
+     * @param field O {@link DateEnum} do campo desejado
      * 
      * @return O valor da campo desejado
      * @throws Exception Caso ocorra algum erro uma exceção será lançada
      */
-    public static int getFieldInDate(Date date, DateConstants field) throws Exception
+    public static int getFieldInDate(Date date, DateEnum field) throws Exception
     {
         GregorianCalendar cal = new GregorianCalendar();
         cal.setTime(date);
@@ -207,7 +207,7 @@ public class DateUtils extends AbstractUtils
         GregorianCalendar cal = new GregorianCalendar();
         cal.setTime(date);
 
-        return (cal.getActualMaximum(DateConstants.DIA_DO_MES.getIntValue()));
+        return (cal.getActualMaximum(DateEnum.DIA_DO_MES.getIntValue()));
     }
 
     /**
@@ -249,7 +249,7 @@ public class DateUtils extends AbstractUtils
         while(c0.before(c1))
         {
             retorno++;
-            c0.add(DateConstants.DIA_DO_MES.getIntValue(), 1);
+            c0.add(DateEnum.DIA_DO_MES.getIntValue(), 1);
         }
         
         return (retorno);
@@ -266,9 +266,9 @@ public class DateUtils extends AbstractUtils
         Calendar c = new GregorianCalendar();
         c.setTime(new Date());
 
-        int hora = c.get(DateConstants.HORA_DO_DIA.getIntValue()) * 3600;
-        int minuto = c.get(DateConstants.MINUTO.getIntValue()) * 60;
-        int segundo = c.get(DateConstants.SEGUNDO.getIntValue()) * 1;
+        int hora = c.get(DateEnum.HORA_DO_DIA.getIntValue()) * 3600;
+        int minuto = c.get(DateEnum.MINUTO.getIntValue()) * 60;
+        int segundo = c.get(DateEnum.SEGUNDO.getIntValue()) * 1;
 
         return ((hora + minuto + segundo));
     }
@@ -287,7 +287,7 @@ public class DateUtils extends AbstractUtils
         GregorianCalendar c = new GregorianCalendar();
         c.setTime(date);
         
-        return (c.getDisplayName(DateConstants.MES.getIntValue(), DateConstants.FORMATO_PADRAO.getIntValue(), locale));
+        return (c.getDisplayName(DateEnum.MES.getIntValue(), DateEnum.FORMATO_PADRAO.getIntValue(), locale));
     }
 
     /**
@@ -305,8 +305,8 @@ public class DateUtils extends AbstractUtils
         
         for (int i = 0; i < r.length; i++)
         {
-            r[i] = c.getDisplayName(DateConstants.MES.getIntValue(), DateConstants.FORMATO_PADRAO.getIntValue(), locale);
-            c.add(DateConstants.MES.getIntValue(), 1);
+            r[i] = c.getDisplayName(DateEnum.MES.getIntValue(), DateEnum.FORMATO_PADRAO.getIntValue(), locale);
+            c.add(DateEnum.MES.getIntValue(), 1);
         }
 
         return (r);
@@ -326,7 +326,7 @@ public class DateUtils extends AbstractUtils
         GregorianCalendar c = new GregorianCalendar();
         c.setTime(date);
         
-        return (c.getDisplayName(DateConstants.DIA_DA_SEMANA.getIntValue(), DateConstants.FORMATO_PADRAO.getIntValue(), locale));
+        return (c.getDisplayName(DateEnum.DIA_DA_SEMANA.getIntValue(), DateEnum.FORMATO_PADRAO.getIntValue(), locale));
     }
 
     /**
@@ -339,7 +339,7 @@ public class DateUtils extends AbstractUtils
      */
     public static String[] getAllNameOfDaysInWeek(Locale locale) throws Exception
     {
-        Map<String, Integer> days = new GregorianCalendar(1990, 0, 1).getDisplayNames(DateConstants.DIA_DA_SEMANA.getIntValue(), DateConstants.FORMATO_PADRAO.getIntValue(), locale);
+        Map<String, Integer> days = new GregorianCalendar(1990, 0, 1).getDisplayNames(DateEnum.DIA_DA_SEMANA.getIntValue(), DateEnum.FORMATO_PADRAO.getIntValue(), locale);
         
         try
         {

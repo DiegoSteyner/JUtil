@@ -7,16 +7,15 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
 import jutil.abstracts.AbstractUtils;
-import jutil.data.PrintOutput;
+import jutil.data.dtos.PrintOutputDTO;
 
 /**
  * Classe utilitária para se trabalhar com execuções de comandos externos
  * 
  * @author Diego Steyner
  */
-public class RuntimeUtils extends AbstractUtils 
+public final class RuntimeUtils extends AbstractUtils 
 {
-    
     /**
      * Construtor padrão privado
      */
@@ -35,13 +34,13 @@ public class RuntimeUtils extends AbstractUtils
      * @param executable O endereço do executável
      * @param args Os parâmetros do executável
      * @param executionDir O diretório de execução
-     * @param print O {@link PrintOutput} com os objetos de impressão desejados
+     * @param print O {@link PrintOutputDTO} com os objetos de impressão desejados
      * @param charset O charset no qual a leitura da saída deve ser feita
      * 
      * @return A String de saída do programa
      * @throws Exception Caso algum erro ocorra uma excessão será lançada
      */
-    public static synchronized String execProgramByCommand(String executable, String args, String executionDir, PrintOutput print, String charset) throws Exception
+    public static synchronized String execProgramByCommand(String executable, String args, String executionDir, PrintOutputDTO print, String charset) throws Exception
     {
         String[] cmdarray = new String[2];
         StringBuilder retorno = new StringBuilder();
@@ -99,17 +98,18 @@ public class RuntimeUtils extends AbstractUtils
      * de comandos através das classes {@link ProcessBuilder} ou do uso da API Apache Commons Exec (https://commons.apache.org/proper/commons-exec/)
      * 
      * @param command O comando que se deseja executar
-     * @param print O {@link PrintOutput} com os objetos de impressão desejados
+     * @param print O {@link PrintOutputDTO} com os objetos de impressão desejados
      * @param charset O charset no qual a leitura da saída deve ser feita
      * 
      * @return A saída do comando
      * @throws Exception Caso algum erro ocorra uma excessão será lançada
      */
-    public static String execSystemCommand(String command, PrintOutput print, String charset) throws Exception
+    public static String execSystemCommand(String command, PrintOutputDTO print, String charset) throws Exception
     {
         String str = "";
         StringBuilder retorno = new StringBuilder();
-        BufferedReader read = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(command).getInputStream(), Charset.forName(charset)));
+        Process proc = Runtime.getRuntime().exec(command);
+		BufferedReader read = new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.forName(charset)));
 
         while ((str = read.readLine()) != null)
         {
@@ -132,7 +132,70 @@ public class RuntimeUtils extends AbstractUtils
         read.close();
         return (retorno.toString());
     }
+
+    /**
+     * Método que executa um comando do windows utilizando o pré-cadastro do CMD
+     * 
+     * @param command O comando a ser executado
+     * @param print O {@link PrintOutputDTO} a ser usado para impressão do comando
+     * @param charset O chartset a user usado
+     * 
+     * @return A String com o retorno do comando
+     * @throws Exception Caso alguma erro ocorra, uma exceção será lançada
+     */
+    public static String execSystemCommandCmd(String command, PrintOutputDTO print, String charset) throws Exception
+    {
+		ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", command);
+		builder.redirectErrorStream(true);
+		
+		Process process = builder.start();
+		BufferedReader read = new BufferedReader(new InputStreamReader(process.getInputStream(), Charset.forName(charset)));
+		
+		String line;
+        StringBuilder retorno = new StringBuilder();
+		
+		while ((line = read.readLine()) != null)
+        {
+            retorno.append(line).append("\n");
+            
+            if(print != null)
+            {
+                if(print.getPrintOut() != null)
+                {
+                    print.getPrintOut().println(retorno.toString());
+                }
+                
+                if(print.getComponentOut() != null)
+                {
+                    print.getComponentOut().setText(retorno.toString());
+                }
+            }
+        }
+
+        read.close();
+        return (retorno.toString());
+    }
     
+    /**
+     * Método que executa um comando do windows utilizando o pré-cadastro do CMD
+     * 
+     * @param command O comando a ser executado
+     * @param charset O chartset a user usado
+     * 
+     * @return Um {@link BufferedReader} com a saída do comando.
+     * @throws Exception Caso alguma erro ocorra, uma exceção será lançada
+     */
+    public static BufferedReader execSystemCommandCmd(String command, String charset) throws Exception
+    {
+    	ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", command);
+    	builder.redirectErrorStream(true);
+    	
+    	Process process = builder.start();
+    	BufferedReader read = new BufferedReader(new InputStreamReader(process.getInputStream(), Charset.forName(charset)));
+    	
+    	return(read);
+    }
+
     /**
      * Método que cria uma linha de comando capaz de executar um comando CMD em processo totalmente novo.</br></br>
      * Obs: Caso um novo programa seja chamado de dentro do CMD, os dois programas pertecerão a mesma execução, e, a depender do funcionamento do subprograma</br></br>
@@ -149,21 +212,5 @@ public class RuntimeUtils extends AbstractUtils
         command.append("rundll32 SHELL32.DLL,ShellExec_RunDLL cmd /c \" ").append(cmdCommand).append(" \"");
         
         return(command.toString());
-    }
-    
-    /**
-     * Método que faz o execução da thread atual ficar em pausa por um determinado tempo
-     * 
-     * @param segundos Os Segundos em espera
-     */
-    public static synchronized void wait(int segundos)
-    {
-        try
-        {
-            Thread.sleep((segundos * 1000));
-        }
-        catch (InterruptedException ex)
-        {
-        }
     }
 }
